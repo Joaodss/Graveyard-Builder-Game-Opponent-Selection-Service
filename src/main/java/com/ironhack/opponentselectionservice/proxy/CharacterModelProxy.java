@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "character-model-service")
-@RequestMapping("/api/v1/characters")
+@FeignClient(name = "character-model-service", path = "/api/v1/characters")
 public interface CharacterModelProxy {
 
     @GetMapping("/party/{username}")

@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "user-model-service")
-@RequestMapping("/api/v1/users")
+@FeignClient(name = "user-model-service",path = "/api/v1/users")
 public interface UserModelProxy {
 
     @GetMapping("/username/{username}")
