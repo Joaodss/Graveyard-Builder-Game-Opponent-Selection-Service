@@ -20,7 +20,6 @@ public interface UserModelProxy {
     @PostMapping("/register")
     UserDTO registerUser(@RequestBody RegisterUserDTO registerUserDTO);
 
-
     @PutMapping("/update/{username}")
     UserDTO updateUser(@PathVariable String username, @RequestBody UserDTO user);
 
