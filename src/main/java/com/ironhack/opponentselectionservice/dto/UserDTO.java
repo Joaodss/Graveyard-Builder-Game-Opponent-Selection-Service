@@ -1,7 +1,15 @@
 package com.ironhack.opponentselectionservice.dto;
 
+import lombok.*;
+
 import java.util.Set;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class UserDTO {
 
     private String username;

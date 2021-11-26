@@ -8,10 +8,11 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class RegisterUserDTO {
+public class LevelUpDTO {
 
-    private String username;
-    private String email;
-    private String password;
+    private Long id;
+    private Integer healthPoints;
+    private Integer energyPoints;
+    private Integer attackPoints;
 
 }

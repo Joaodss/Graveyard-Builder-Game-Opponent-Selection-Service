@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class OpponentSelectionServiceImpl implements OpponentSelectionService {
     private final UserModelProxy userModelProxy;
     private final CharacterModelProxy characterModelProxy;
+    private final OpponentCreationService opponentCreationService;
 
     private final int MIN_POSSIBLE_OPPONENTS = 10;
     private final int MAX_DIFFERENCE_OF_PARTY_LEVEL = 3;
@@ -26,20 +27,16 @@ public class OpponentSelectionServiceImpl implements OpponentSelectionService {
 
     public List<CharacterDTO> getOpponentCharacters(int partyLevel) {
         log.info("Getting opponents for party level: {}", partyLevel);
+        List<CharacterDTO> selectedParty;
         var possibleOpponentNames =
                 getPossibleOpponentNames(partyLevel - MAX_DIFFERENCE_OF_PARTY_LEVEL, partyLevel + MAX_DIFFERENCE_OF_PARTY_LEVEL);
-
         if (isValidOpponentList(possibleOpponentNames)) {
             var selectedUser = possibleOpponentNames.stream().findAny().orElse(null);
-            var selectedParty = getParty(selectedUser);
-            return selectFighters(selectedParty, NUMBER_OF_OPPONENTS);
+            selectedParty = getParty(selectedUser);
+        } else {
+            selectedParty = opponentCreationService.generateOpponent(partyLevel);
         }
-        return null;
-    }
-
-    public boolean isValidOpponentList(List<String> opponentList) {
-        log.info("Validating possible user opponents: {}", opponentList);
-        return opponentList.size() >= MIN_POSSIBLE_OPPONENTS;
+        return selectFighters(selectedParty, NUMBER_OF_OPPONENTS);
     }
 
     public List<CharacterDTO> selectFighters(List<CharacterDTO> party, int nrOfFighters) {
@@ -50,6 +47,12 @@ public class OpponentSelectionServiceImpl implements OpponentSelectionService {
                 .collect(Collectors.toList());
         Collections.shuffle(fightersList);
         return fightersList;
+    }
+
+    // -------------------- Aux Methods --------------------
+    public boolean isValidOpponentList(List<String> opponentList) {
+        log.info("Validating possible user opponents: {}", opponentList);
+        return opponentList.size() >= MIN_POSSIBLE_OPPONENTS;
     }
 
     // -------------------- Proxy Calls --------------------

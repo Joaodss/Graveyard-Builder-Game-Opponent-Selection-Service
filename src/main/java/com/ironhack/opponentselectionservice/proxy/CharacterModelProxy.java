@@ -1,6 +1,7 @@
 package com.ironhack.opponentselectionservice.proxy;
 
 import com.ironhack.opponentselectionservice.dto.CharacterDTO;
+import com.ironhack.opponentselectionservice.dto.LevelUpDTO;
 import com.ironhack.opponentselectionservice.dto.NewCharacterDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -19,5 +20,9 @@ public interface CharacterModelProxy {
 
     @PutMapping("/update")
     CharacterDTO updateCharacter(@RequestBody CharacterDTO updateCharacterDTO);
+
+    @PutMapping("/update/level")
+    CharacterDTO levelUpCharacter(@RequestBody LevelUpDTO levelUpDTO);
+
 
 }
