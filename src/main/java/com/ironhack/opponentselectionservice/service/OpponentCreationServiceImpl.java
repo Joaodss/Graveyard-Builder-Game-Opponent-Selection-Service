@@ -76,6 +76,8 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
             var leveledCharacter = levelUpCharacter(randomPartyMember);
             leveledParty.add(leveledCharacter);
         }
+        int partyLevel = leveledParty.stream().mapToInt(CharacterDTO::getLevel).sum();
+        updateUserPartyLevel(userUsername, partyLevel);
         return leveledParty;
     }
 
@@ -158,6 +160,14 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
     public UserDTO getUserByUsername(String username) {
         log.info("Getting user by username {}", username);
         return userModelProxy.getUserByUsername(username).getBody();
+    }
+
+    public UserDTO updateUserPartyLevel(String username, int level) {
+        log.info("Updating user {} party level to {}", username, level);
+        var userDTO = new UserDTO();
+        userDTO.setUsername(username);
+        userDTO.setPartyLevel(level);
+        return userModelProxy.updateUser(username, userDTO);
     }
 
 }
