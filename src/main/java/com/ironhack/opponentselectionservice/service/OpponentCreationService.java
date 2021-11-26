@@ -22,24 +22,4 @@ public interface OpponentCreationService {
 
     List<CharacterDTO> levelUpOpponentParty(int level, String userUsername, List<CharacterDTO> party);
 
-
-    // -------------------- Aux Methods  --------------------
-    String generateUsername();
-
-    boolean isValidUserUsername(String username);
-
-    String generateCharacterName();
-
-    ArrayList<String> getRandomPoints(int numberOfPoints);
-
-
-    // -------------------- Proxy Methods  --------------------
-    UserDTO registerUser(RegisterUserDTO registerUserDTO);
-
-    CharacterDTO registerCharacter(NewCharacterDTO newCharacter);
-
-    CharacterDTO levelUpCharacter(CharacterDTO characterToUpdate);
-
-    UserDTO getUserByUsername(String username);
-
 }

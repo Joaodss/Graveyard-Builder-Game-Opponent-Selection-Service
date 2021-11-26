@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ironhack.opponentselectionservice.util.Randomizer.getRandom;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -20,7 +22,7 @@ public class OpponentSelectionServiceImpl implements OpponentSelectionService {
     private final CharacterModelProxy characterModelProxy;
     private final OpponentCreationService opponentCreationService;
 
-    private final int MIN_POSSIBLE_OPPONENTS = 10;
+    private final int MIN_POSSIBLE_OPPONENTS = 20;
     private final int MAX_DIFFERENCE_OF_PARTY_LEVEL = 3;
     private final int NUMBER_OF_OPPONENTS = 5;
 
@@ -28,13 +30,17 @@ public class OpponentSelectionServiceImpl implements OpponentSelectionService {
     public List<CharacterDTO> getOpponentCharacters(int partyLevel) {
         log.info("Getting opponents for party level: {}", partyLevel);
         List<CharacterDTO> selectedParty;
+        int minLevel = partyLevel - MAX_DIFFERENCE_OF_PARTY_LEVEL;
+        int maxLevel = partyLevel + MAX_DIFFERENCE_OF_PARTY_LEVEL;
+
         var possibleOpponentNames =
-                getPossibleOpponentNames(partyLevel - MAX_DIFFERENCE_OF_PARTY_LEVEL, partyLevel + MAX_DIFFERENCE_OF_PARTY_LEVEL);
+                getPossibleOpponentNames(minLevel, maxLevel);
         if (isValidOpponentList(possibleOpponentNames)) {
-            var selectedUser = possibleOpponentNames.stream().findAny().orElse(null);
+            var selectedUser = getRandom(possibleOpponentNames);
             selectedParty = getParty(selectedUser);
         } else {
-            selectedParty = opponentCreationService.generateOpponent(partyLevel);
+            int randomLevel = getRandom(minLevel, maxLevel);
+            selectedParty = opponentCreationService.generateOpponent(randomLevel);
         }
         return selectFighters(selectedParty, NUMBER_OF_OPPONENTS);
     }

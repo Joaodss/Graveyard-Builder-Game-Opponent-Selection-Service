@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.ironhack.opponentselectionservice.util.Randomizer.getRandom;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -58,27 +60,32 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
         for (int i = 0; i < MAX_PARTY_SIZE; i++) {
             var newCharacter = new NewCharacterDTO(
                     userUsername,
-                    CHARACTER_TYPES[faker.random().nextInt(CHARACTER_TYPES.length)],
+                    getRandom(CHARACTER_TYPES),
                     generateCharacterName(),
                     null
             );
-            party.add(registerCharacter(newCharacter));
+            var createdCharacter = registerCharacter(newCharacter);
+            var level1Character = levelUpCharacter(createdCharacter);
+            party.add(level1Character);
         }
+        int partyLevel = party.stream().mapToInt(CharacterDTO::getLevel).sum();
+        updateUserPartyLevel(userUsername, partyLevel);
         return party;
     }
 
     public List<CharacterDTO> levelUpOpponentParty(int level, String userUsername, List<CharacterDTO> party) {
         log.info("Leveling up opponent party");
-        List<CharacterDTO> leveledParty = new ArrayList<>();
+
         var currentPartyLevel = getUserByUsername(userUsername).getPartyLevel();
+        log.info("Party level: {}", currentPartyLevel);
         for (int i = currentPartyLevel; i < level; i++) {
-            var randomPartyMember = party.get(faker.random().nextInt(party.size()));
+            var randomPartyMember = party.remove(faker.random().nextInt(party.size()));
             var leveledCharacter = levelUpCharacter(randomPartyMember);
-            leveledParty.add(leveledCharacter);
+            party.add(leveledCharacter);
         }
-        int partyLevel = leveledParty.stream().mapToInt(CharacterDTO::getLevel).sum();
+        int partyLevel = party.stream().mapToInt(CharacterDTO::getLevel).sum();
         updateUserPartyLevel(userUsername, partyLevel);
-        return leveledParty;
+        return party;
     }
 
 
@@ -95,7 +102,7 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
                 faker.ancient().primordial(),
                 faker.lordOfTheRings().character()
         );
-        return categoriesList.get(faker.random().nextInt(categoriesList.size()));
+        return getRandom(categoriesList);
     }
 
     public boolean isValidUserUsername(String username) {
@@ -111,15 +118,22 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
                 faker.ancient().god(),
                 faker.ancient().hero(),
                 faker.ancient().titan(),
-                faker.ancient().primordial()
+                faker.ancient().primordial(),
+                faker.elderScrolls().firstName(),
+                faker.elderScrolls().lastName(),
+                faker.lordOfTheRings().character(),
+                faker.witcher().character(),
+                faker.animal().name(),
+                faker.dune().planet(),
+                faker.leagueOfLegends().champion()
         );
-        return categoriesList.get(faker.random().nextInt(categoriesList.size()));
+        return getRandom(categoriesList);
     }
 
     public ArrayList<String> getRandomPoints(int numberOfPoints) {
         var pointsToAdd = new ArrayList<String>();
         for (int i = 0; i < numberOfPoints; i++) {
-            var randomPoint = LEVEL_UP_POINT_TYPES[faker.random().nextInt(LEVEL_UP_POINT_TYPES.length)];
+            var randomPoint = getRandom(LEVEL_UP_POINT_TYPES);
             pointsToAdd.add(randomPoint);
         }
         return pointsToAdd;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "character-model-service", path = "/api/v1/characters")
+@FeignClient(value = "character-model-service", path = "/api/v1/characters")
 public interface CharacterModelProxy {
 
     @GetMapping("/party/{username}")
@@ -17,11 +17,7 @@ public interface CharacterModelProxy {
     @PostMapping("/create")
     CharacterDTO createCharacter(@RequestBody NewCharacterDTO newCharacterDTO);
 
-    @PutMapping("/update")
-    CharacterDTO updateCharacter(@RequestBody CharacterDTO updateCharacterDTO);
-
-    @PutMapping("/update/level")
+    @PutMapping("/update/levelUp")
     CharacterDTO levelUpCharacter(@RequestBody LevelUpDTO levelUpDTO);
-
 
 }
