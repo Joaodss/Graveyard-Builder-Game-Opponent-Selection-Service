@@ -176,12 +176,12 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
         return userModelProxy.getUserByUsername(username).getBody();
     }
 
-    public UserDTO updateUserPartyLevel(String username, int level) {
+    public void updateUserPartyLevel(String username, int level) {
         log.info("Updating user {} party level to {}", username, level);
         var userDTO = new UserDTO();
         userDTO.setUsername(username);
         userDTO.setPartyLevel(level);
-        return userModelProxy.updateUser(username, userDTO);
+        userModelProxy.updateUser(username, userDTO);
     }
 
 }
