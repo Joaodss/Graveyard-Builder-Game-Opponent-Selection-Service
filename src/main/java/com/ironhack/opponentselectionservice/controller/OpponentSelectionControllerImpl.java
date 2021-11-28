@@ -4,13 +4,11 @@ import com.ironhack.opponentselectionservice.dto.CharacterDTO;
 import com.ironhack.opponentselectionservice.service.OpponentSelectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/v1/opponent")
@@ -21,10 +19,10 @@ public class OpponentSelectionControllerImpl implements OpponentSelectionControl
 
 
     @GetMapping("random/{level}")
-    public ResponseEntity<List<CharacterDTO>> getOpponents(@PathVariable(name = "level") Integer partyLevel) {
+    @ResponseStatus(OK)
+    public List<CharacterDTO> getOpponents(@PathVariable(name = "level") Integer partyLevel) {
         log.info("Getting opponents for level {}", partyLevel);
-        var listOfOpponents = opponentSelectionService.getOpponentCharacters(partyLevel);
-        return ResponseEntity.ok(listOfOpponents);
+        return opponentSelectionService.getOpponentCharacters(partyLevel);
     }
 
 }
