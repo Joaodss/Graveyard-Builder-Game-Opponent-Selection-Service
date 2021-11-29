@@ -90,7 +90,7 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
 
 
     // -------------------- Aux Methods  --------------------
-    public String generateUsername() {
+    private String generateUsername() {
         log.info("Generating username");
         var categoriesList = List.of(
                 faker.name().username(),
@@ -105,14 +105,14 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
         return getRandom(categoriesList);
     }
 
-    public boolean isValidUserUsername(String username) {
+    private boolean isValidUserUsername(String username) {
         log.info("Validating username {}", username);
         var response = userModelProxy.getUserByUsername(username);
         return response.getStatusCodeValue() == 404 &&
                 Objects.equals(response.getHeaders().getFirst("error"), "User not found");
     }
 
-    public String generateCharacterName() {
+    private String generateCharacterName() {
         log.info("Generating character name");
         var categoriesList = List.of(
                 faker.ancient().god(),
@@ -130,7 +130,7 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
         return getRandom(categoriesList);
     }
 
-    public ArrayList<String> getRandomPoints(int numberOfPoints) {
+    private ArrayList<String> getRandomPoints(int numberOfPoints) {
         var pointsToAdd = new ArrayList<String>();
         for (int i = 0; i < numberOfPoints; i++) {
             var randomPoint = getRandom(LEVEL_UP_POINT_TYPES);
@@ -141,21 +141,21 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
 
 
     // -------------------- Proxy Methods  --------------------
-    public UserDTO registerUser(RegisterUserDTO registerUserDTO) {
+    private UserDTO registerUser(RegisterUserDTO registerUserDTO) {
         log.info("Registering user {}", registerUserDTO.getUsername());
         log.info("With email {}", registerUserDTO.getEmail());
         log.info("And password {}", registerUserDTO.getPassword());
         return userModelProxy.registerUser(registerUserDTO);
     }
 
-    public CharacterDTO registerCharacter(NewCharacterDTO newCharacter) {
+    private CharacterDTO registerCharacter(NewCharacterDTO newCharacter) {
         log.info("Registering character {}", newCharacter.getName());
         log.info("With type {}", newCharacter.getType());
         log.info("For user {}", newCharacter.getUserUsername());
         return characterModelProxy.createCharacter(newCharacter);
     }
 
-    public CharacterDTO levelUpCharacter(CharacterDTO characterToUpdate) {
+    private CharacterDTO levelUpCharacter(CharacterDTO characterToUpdate) {
         log.info("Updating character {}", characterToUpdate.getName());
         log.info("With type {}", characterToUpdate.getType());
         log.info("For user {}", characterToUpdate.getUserUsername());
@@ -171,12 +171,12 @@ public class OpponentCreationServiceImpl implements OpponentCreationService {
         return characterModelProxy.levelUpCharacter(levelUpDTO);
     }
 
-    public UserDTO getUserByUsername(String username) {
+    private UserDTO getUserByUsername(String username) {
         log.info("Getting user by username {}", username);
         return userModelProxy.getUserByUsername(username).getBody();
     }
 
-    public void updateUserPartyLevel(String username, int level) {
+    private void updateUserPartyLevel(String username, int level) {
         log.info("Updating user {} party level to {}", username, level);
         var userDTO = new UserDTO();
         userDTO.setUsername(username);

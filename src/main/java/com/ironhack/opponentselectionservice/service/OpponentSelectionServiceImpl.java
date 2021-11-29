@@ -45,7 +45,7 @@ public class OpponentSelectionServiceImpl implements OpponentSelectionService {
         return selectFighters(selectedParty, NUMBER_OF_OPPONENTS);
     }
 
-    public List<CharacterDTO> selectFighters(List<CharacterDTO> party, int nrOfFighters) {
+    private List<CharacterDTO> selectFighters(List<CharacterDTO> party, int nrOfFighters) {
         log.info("Selecting fighters from party: {}", party);
         List<CharacterDTO> fightersList = party.stream()
                 .sorted(Comparator.comparingInt(CharacterDTO::getLevel).reversed())
@@ -56,18 +56,18 @@ public class OpponentSelectionServiceImpl implements OpponentSelectionService {
     }
 
     // -------------------- Aux Methods --------------------
-    public boolean isValidOpponentList(List<String> opponentList) {
+    private boolean isValidOpponentList(List<String> opponentList) {
         log.info("Validating possible user opponents: {}", opponentList);
         return opponentList.size() >= MIN_POSSIBLE_OPPONENTS;
     }
 
     // -------------------- Proxy Calls --------------------
-    public List<String> getPossibleOpponentNames(int min, int max) {
+    private List<String> getPossibleOpponentNames(int min, int max) {
         log.info("Getting possible opponents between levels: {} and {}", min, max);
         return userModelProxy.getAllUsersUsernamesByPartyLevelBetween(min, max);
     }
 
-    public List<CharacterDTO> getParty(String userUsername) {
+    private List<CharacterDTO> getParty(String userUsername) {
         log.info("Getting party of user: {}", userUsername);
         return characterModelProxy.getCharactersByUserUsernameActive(userUsername);
     }
