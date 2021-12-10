@@ -32,11 +32,13 @@ public class OpponentSelectionServiceImpl implements OpponentSelectionService {
         List<CharacterDTO> selectedParty;
         int minLevel = partyLevel - MAX_DIFFERENCE_OF_PARTY_LEVEL;
         int maxLevel = partyLevel + MAX_DIFFERENCE_OF_PARTY_LEVEL;
-
         var possibleOpponentNames =
                 getPossibleOpponentNames(minLevel, maxLevel);
-        if (isValidOpponentList(possibleOpponentNames)) {
-            var selectedUser = getRandom(possibleOpponentNames);
+        var realPossibleOpponentNames = possibleOpponentNames.stream()
+                .filter(opponent -> isValidOpponent(opponent, minLevel, maxLevel))
+                .toList();
+        if (isValidOpponentList(realPossibleOpponentNames)) {
+            var selectedUser = getRandom(realPossibleOpponentNames);
             selectedParty = getParty(selectedUser);
         } else {
             int randomLevel = getRandom(minLevel, maxLevel);
@@ -56,6 +58,13 @@ public class OpponentSelectionServiceImpl implements OpponentSelectionService {
     }
 
     // -------------------- Aux Methods --------------------
+    private boolean isValidOpponent(String opponentUsername, int minLevel, int maxLevel) {
+        var opponentParty = getParty(opponentUsername);
+        if (opponentParty.size() == 10) return true;
+        int realPartyLevel = opponentParty.stream().mapToInt(CharacterDTO::getLevel).sum() + (10 - opponentParty.size());
+        return realPartyLevel >= minLevel && realPartyLevel <= maxLevel && opponentParty.size() >= NUMBER_OF_OPPONENTS;
+    }
+
     private boolean isValidOpponentList(List<String> opponentList) {
         log.info("Validating possible user opponents: {}", opponentList);
         return opponentList.size() >= MIN_POSSIBLE_OPPONENTS;
